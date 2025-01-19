@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker</title>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --secondary-text: #666666;
+            --border-color: #dddddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --secondary-text: #b3b3b3;
+            --border-color: #404040;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="password"],
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: var(--secondary-text);
+        }
+
+        .check-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .check-button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .criteria {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--secondary-text);
+        }
+
+        .criteria ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .server-info {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--secondary-text);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--secondary-text);
+        }
+
+        .criteria-item {
+            margin: 3px 0;
+            color: var(--text-color);
+        }
+
+        .met {
+            color: #00c851;
+        }
+
+        .not-met {
+            color: #ff4444;
+        }
+
+        .theme-toggle {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .theme-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            background-color: #357abd;
+        }
+
+        .theme-icon {
+            margin-right: 8px;
+        }
+
+        [data-theme="dark"] .theme-button {
+            background-color: #ffd700;
+            color: #333;
+        }
+
+        [data-theme="dark"] .theme-button:hover {
+            background-color: #ffed4a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Strength Checker</h1>
+        <div class="input-group">
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Enter your password">
+                <button class="toggle-password" onclick="togglePassword()">👁️</button>
+            </div>
+            <button class="check-button" onclick="checkPassword()">Check Strength</button>
+        </div>
+        <div id="result"></div>
+        <div class="criteria" id="criteria"></div>
+    </div>
+
+    <div class="theme-toggle">
+        <button class="theme-button" onclick="toggleTheme()">
+            <span class="theme-icon">🌓</span>
+            <span id="theme-text">Toggle Dark Mode</span>
+        </button>
+    </div>
+
+    <div class="server-info">
+        Website hosting demo using NGINX server.
+    </div>
+
+    <footer>
+        Made by Sarthak Sanay & Mudit Srivastav! &copy; 2025. All rights reserved.
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                themeText.textContent = 'Toggle Light Mode';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeText.textContent = 'Toggle Dark Mode';
+            }
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const result = document.getElementById('result');
+            const criteriaDiv = document.getElementById('criteria');
+            
+            const criteria = {
+                length: {
+                    met: password.length >= 8,
+                    text: 'Minimum 8 characters'
+                },
+                uppercase: {
+                    met: /[A-Z]/.test(password),
+                    text: 'Contains uppercase letters'
+                },
+                lowercase: {
+                    met: /[a-z]/.test(password),
+                    text: 'Contains lowercase letters'
+                },
+                numbers: {
+                    met: /\d/.test(password),
+                    text: 'Contains numbers'
+                },
+                special: {
+                    met: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+                    text: 'Contains special characters'
+                },
+                noConsecutive: {
+                    met: !/(.)\1{2,}/.test(password),
+                    text: 'No more than 2 consecutive identical characters'
+                }
+            };
+
+            const metCriteria = Object.values(criteria).filter(c => c.met).length;
+            const totalCriteria = Object.keys(criteria).length;
+            const strengthPercentage = (metCriteria / totalCriteria) * 100;
+
+            let strengthText = '';
+            let color = '';
+
+            if (password.length === 0) {
+                strengthText = 'Please enter a password';
+                color = '#666';
+            } else if (strengthPercentage <= 33) {
+                strengthText = 'Weak Password';
+                color = '#ff4444';
+            } else if (strengthPercentage <= 66) {
+                strengthText = 'Moderate Password';
+                color = '#ffa700';
+            } else if (strengthPercentage < 100) {
+                strengthText = 'Strong Password';
+                color = '#00c851';
+            } else {
+                strengthText = 'Very Strong Password';
+                color = '#007E33';
+            }
+
+            result.style.backgroundColor = color + '20';
+            result.style.color = color;
+            result.textContent = strengthText;
+
+            criteriaDiv.innerHTML = '<ul>' +
+                Object.entries(criteria).map(([key, value]) => 
+                    `<li class="criteria-item ${value.met ? 'met' : 'not-met'}">
+                        ${value.met ? '✓' : '✗'} ${value.text}
+                    </li>`
+                ).join('') +
+                '</ul>';
+        }
+    </script>
+</body>
+</html>
